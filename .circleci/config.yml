@@ -34,8 +34,9 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest --junitxml=test-reports/pytest/unitest-junit.xml \
-              --cov-report html:test-reports/coverage/coverage.html \
+            pytest \
+              --junitxml=test-reports/pytest/unitest-junit.xml \
+              --cov-report html:test-reports/coverage/ --cov-branch --cov \
               demo
 
       - store_artifacts:
