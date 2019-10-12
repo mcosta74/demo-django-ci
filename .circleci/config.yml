@@ -13,12 +13,15 @@ jobs:
 
     docker:
       - image: circleci/python:3.7.4
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
 
     working_directory: ~/repo
 
     steps:
       - checkout
 
+      - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
 
       - restore_cache:
@@ -32,16 +35,20 @@ jobs:
             pipenv install --dev
 
       - save_cache:
-          paths:
-            - /usr/local/lib/python3.7/site-packages
           key: v1-dependencies-{{ checksum "Pipfile.lock" }}
+          paths:
+            - .venv
+            - /usr/local/bin
+            - /usr/local/lib/python3.7/site-packages
 
       - run:
           name: run tests
           command: |
             pipenv run pytest \
               --junitxml=test-reports/pytest/unitest-junit.xml \
-              <<# parameters.coverage >> --cov-report html:test-reports/coverage/ --cov-branch --cov <</ parameters.coverage >> \
+              <<# parameters.coverage >> \
+                --cov-report html:test-reports/coverage/ --cov-branch --cov \
+              <</ parameters.coverage >> \
               demo
 
       - store_artifacts:
