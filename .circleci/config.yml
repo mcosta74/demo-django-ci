@@ -2,9 +2,15 @@
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2
+version: 2.1
+
 jobs:
   build:
+    parameters:
+      coverage:
+        type: boolean
+        default: false
+
     docker:
       - image: circleci/python:3.7.4
 
@@ -36,7 +42,7 @@ jobs:
             . venv/bin/activate
             pytest \
               --junitxml=test-reports/pytest/unitest-junit.xml \
-              --cov-report html:test-reports/coverage/ --cov-branch --cov \
+              <<# parameters.coverage >> --cov-report html:test-reports/coverage/ --cov-branch --cov <</ parameters.coverage >> \
               demo
 
       - store_artifacts:
@@ -45,3 +51,21 @@ jobs:
 
       - store_test_results:
           path: test-reports
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: '0 0 * * *'
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build:
+          coverage: true
