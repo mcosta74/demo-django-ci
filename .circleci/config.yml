@@ -19,28 +19,27 @@ jobs:
     steps:
       - checkout
 
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "requirements.txt" }}
+            - v1-dependencies-{{ checksum "Pipfile.lock" }}
             - v1-dependencies-
 
       - run:
           name: install dependencies
           command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
+            pipenv install --dev
 
       - save_cache:
           paths:
-            - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+            - /usr/local/lib/python3.7/site-packages
+          key: v1-dependencies-{{ checksum "Pipfile.lock" }}
 
       - run:
           name: run tests
           command: |
-            . venv/bin/activate
-            pytest \
+            pipenv run pytest \
               --junitxml=test-reports/pytest/unitest-junit.xml \
               <<# parameters.coverage >> --cov-report html:test-reports/coverage/ --cov-branch --cov <</ parameters.coverage >> \
               demo

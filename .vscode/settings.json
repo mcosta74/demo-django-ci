@@ -1,5 +1,5 @@
 {
-  "python.pythonPath": ".venv/bin/python3",
+  "python.pythonPath": "/Users/massimoc/.local/share/virtualenvs/demo-django-ci-zBz-g6ho/bin/python",
   "files.exclude": {
     "**/__pycache__": true,
     "**/.pytest_cache": true,
