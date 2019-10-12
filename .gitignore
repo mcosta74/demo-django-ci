@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 demo/.pytest_cache
 demo/.test_results
+test-reports
