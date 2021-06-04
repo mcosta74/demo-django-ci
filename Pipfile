@@ -10,7 +10,7 @@ pytest-cov = "*"
 pytest-html = "*"
 
 [packages]
-django = "==2.2.8"
+django = "==2.2.21"
 djangorestframework = "==3.10.*"
 
 [requires]
